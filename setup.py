@@ -46,6 +46,7 @@ setup(
     description = 'Twitter Bootstrap mixin for Django forms.',
     long_description=read('README.mkd'),
     author='Roman Kalyakin',
+    author_email='theorm@gmail.com',
     packages = ['bootstrap','bootstrap.forms'],
     package_data = package_data,
     version = '0.1.0',
