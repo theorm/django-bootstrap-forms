@@ -1,0 +1,7 @@
+Twitter Bootstrap mixin for Django forms
+=========================================
+http://twitter.github.com/bootstrap
+
+Installation
+------------
+Add 'bootstrap.forms' to INSTALLED_APPS
