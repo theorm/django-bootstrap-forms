@@ -1,0 +1,18 @@
+<div class="clearfix {% if errors %} error {% endif %}">
+	{{field.label}}
+	<div class="input">
+		<div class="input-append">
+			{{field.field}}
+			<label class="add-on">{% if addon.field %}{{addon.field}}{% else %}{{addon}}{% endif %}</label>
+			{% if errors %}
+			{% for error in errors %}
+			<span class="help-inline">{{error}}</span>
+			{% endfor %}
+			{% else %}
+			{% for help_text in help %}
+			<span class="help-inline">{{help_text}}</span>
+			{% endfor %}
+			{% endif %}
+		</div>
+	</div>
+</div>
