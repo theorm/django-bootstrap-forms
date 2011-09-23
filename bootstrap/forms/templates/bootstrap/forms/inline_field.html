@@ -1,5 +1,9 @@
 <div class="clearfix {% if errors %} error {% endif %}">
+	{% if label %}
 	<label>{{label}}:</label>
+	{% else %}
+	{{fields.0.field.label}}	
+	{% endif %}
 	<div class="input">
 		<div class="inline-inputs">
 			{% for field in fields %}
