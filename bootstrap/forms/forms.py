@@ -20,6 +20,32 @@ def _merge_field(collections,key):
     result = [i for i in set(result) if i.strip() != '']
     return result
 
+def _bound_field_context(bf,form=None,widget_attrs={}):
+        if bf.label:
+            label = conditional_escape(force_unicode(bf.label))
+            # Only add the suffix if the label does not end in
+            # punctuation.
+            if form and form.label_suffix:
+                if label[-1] not in ':?.!':
+                    label += form.label_suffix
+            else:
+                label += ':'
+            label = bf.label_tag(label) or ''
+        else:
+            label = ''
+        
+        if bf.field.help_text:
+            help_text = force_unicode(bf.field.help_text)
+        else:
+            help_text = u''
+                    
+        return {
+            'errors' : bf.errors,
+            'label' : mark_safe(label),
+            'field' : bf.as_widget(attrs=widget_attrs),
+            'help_text' : help_text,
+        }
+
 class BaseField(object):
     class Meta:
         abstract = True
@@ -44,39 +70,17 @@ class Field(BaseField):
         
     def get_context(self,form,fields):
         bf = fields.pop(self.field_name)
-        
-        if bf.label:
-            label = conditional_escape(force_unicode(bf.label))
-            # Only add the suffix if the label does not end in
-            # punctuation.
-            if form.label_suffix:
-                if label[-1] not in ':?.!':
-                    label += form.label_suffix
-            label = bf.label_tag(label) or ''
-        else:
-            label = ''
-        
-        if bf.field.help_text:
-            help_text = force_unicode(bf.field.help_text)
-        else:
-            help_text = u''
-        
         attrs = {}
         if self.span:
             attrs['class'] = self.SPAN % self.span
-            
-        return {
-            'errors' : bf.errors,
-            'label' : mark_safe(label),
-            'field' : bf.as_widget(attrs=attrs),
-            'help_text' : help_text,
-        }
+
+        return _bound_field_context(bf,form,attrs)
     
     def get_template(self):
         return get_template(TEMPLATE_PREFIX % "field.html")
 
 class Inline(BaseField):
-    def __init__(self,label,fields=[]):
+    def __init__(self,label=None,fields=[]):
         self.inline_fields = fields
         self.label = label
 
@@ -131,6 +135,19 @@ class BootstrapFormMixin(object):
             return self.Meta.bootstrap
         return  []
     
+    def bootstrap_fields(self):
+        'Get bootstrap _visible only_ fields as rendered html'         
+        fields = {}
+        for f in self.visible_fields():
+            fields[f.name] = f
+            
+        for bootstrap_field in self._bootstrap_fields():
+            yield bootstrap_field.render(self,fields)
+
+        for field in fields.copy():
+            yield Field(field).render(self,fields)
+        
+    
     def as_div(self):
         top_errors = self.non_field_errors() # Errors that should be displayed above all fields.
         output, hidden_fields = [], []
@@ -140,15 +157,8 @@ class BootstrapFormMixin(object):
                 top_errors.extend(['%s: %s' % (field.label,e) for e in field.errors])
             hidden_fields.append(unicode(field))
                 
-        fields = {}
-        for f in self.visible_fields():
-            fields[f.name] = f
-            
-        for bootstrap_field in self._bootstrap_fields():
-            output.append(bootstrap_field.render(self,fields))
-        
-        for field in fields.copy():
-            output.append(Field(field).render(self,fields))
+        for snippet in self.bootstrap_fields():
+            output.append(snippet)
         
         if top_errors:
             output.insert(0,self.get_top_error_template().render(Context({'errors' : top_errors})))
@@ -168,5 +178,5 @@ class BootstrapFormMixin(object):
 class Form(BootstrapFormMixin,forms.Form):
     pass
 
-class ModelForm(BootstrapFormMixin,forms.Form):
+class ModelForm(BootstrapFormMixin,forms.ModelForm):
     pass
