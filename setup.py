@@ -49,7 +49,7 @@ setup(
     author_email='theorm@gmail.com',
     packages = ['bootstrap','bootstrap.forms','bootstrap.forms.templatetags'],
     package_data = package_data,
-    version = '0.1.1',
+    version = '0.1.0',
     url='http://github.com/theorm/django-bootstrap-forms',
     keywords=[],
     license='Apache 2.0',
