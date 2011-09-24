@@ -49,11 +49,12 @@ And mention it in the template:
 		</div>
 		
 Or use template tags on a normal form:
-			<fieldset>
-				<legend>Form with errors rendered with templatetags</legend>
-				{% bootstrap_field error_form.first_name error_form.last_name label='custom label' %}
-				{% bootstrap_field error_form.gst append=error_form.add_gst span=5 %}
-			</fieldset>
+
+		<fieldset>
+			<legend>Form with errors rendered with templatetags</legend>
+			{% bootstrap_field error_form.first_name error_form.last_name label='custom label' %}
+			{% bootstrap_field error_form.gst append=error_form.add_gst span=5 %}
+		</fieldset>
 
 To get this:
 
