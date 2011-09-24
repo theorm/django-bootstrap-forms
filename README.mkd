@@ -5,3 +5,56 @@ http://twitter.github.com/bootstrap
 Installation
 ------------
 Add 'bootstrap.forms' to INSTALLED_APPS
+
+Usage
+-----
+
+Define the form:
+
+		from bootstrap.forms import BootstrapFormMixin,Field,Inline,Addon,TEMPLATE_PREFIX
+		from django import forms
+
+		class ExampleForm(BootstrapFormMixin,forms.Form):
+		    class Meta:
+		        bootstrap = (
+		            Field('flight',span=3),
+		            Inline('Flying',('from', Field('ex',span=2),'to',Field('to',span=2))),
+		            Addon(field=Field('price',span=1),addon='$',prepend=False),
+		            Addon(field=Field('gst',span=1),addon=Field('add_gst')),
+		        )
+
+		    flight = forms.CharField(help_text='E.g. CA147')
+		    ex = forms.CharField(help_text='E.g. Shanghai')
+		    to = forms.IntegerField(help_text='E.g. Sydney')
+		    price = forms.IntegerField(help_text='AUD',label='GST')
+		    gst = forms.IntegerField(help_text='%',label='GST')
+		    add_gst = forms.BooleanField()
+		    secret_field = forms.CharField(widget=forms.HiddenInput,required=True)
+
+And mention it in the template:
+
+		<div class="row">
+		    <div class="span14">
+		    	<form>
+		    		<fieldset>
+		    			<legend>Normal form</legend>
+		    			{{form}}
+		    		</fieldset>
+		    		<fieldset>
+		    			<legend>Form with errors</legend>
+		    			{{error_form}}
+		    		</fieldset>
+				</form>
+			</div>
+		</div>
+		
+Or use template tags on a normal form:
+		<fieldset>
+			<legend>Form with errors rendered with templatetags</legend>
+			{% bootstrap_field error_form.first_name error_form.last_name label='custom label' %}
+			{% bootstrap_field error_form.gst append=error_form.add_gst span=5 %}
+		</fieldset>
+
+To get this:
+
+![Example Form](http://img853.imageshack.us/img853/4945/screenshot20110924at225.png)

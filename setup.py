@@ -42,7 +42,7 @@ package_data = dict(
 )
 
 setup(
-    name = 'bootstrap-forms',
+    name = 'django-bootstrap-forms',
     description = 'Twitter Bootstrap mixin for Django forms.',
     long_description=read('README.mkd'),
     author='Roman Kalyakin',
