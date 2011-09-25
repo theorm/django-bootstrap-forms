@@ -28,7 +28,7 @@ class BootstrapFieldNode(Node):
             contexts = tuple()
             for field in [f.resolve(ctx) for f in self.args]:
                 if isinstance(field,BoundField):
-                    contexts = contexts + (_bound_field_context(field,widget_attrs=attrs),)
+                    contexts = contexts + (_bound_field_context(field,widget_attrs=attrs.copy()),)
                 else:
                     contexts = contexts + (field,)
                                     
@@ -49,7 +49,7 @@ class BootstrapFieldNode(Node):
 
                 context = {}
                 
-                context['field'] = _bound_field_context(self.args[0].resolve(ctx),widget_attrs=attrs)
+                context['field'] = _bound_field_context(self.args[0].resolve(ctx),widget_attrs=attrs.copy())
                 if isinstance(addon,BoundField):
                     context['addon'] =  _bound_field_context(addon)
                 else:
@@ -61,7 +61,7 @@ class BootstrapFieldNode(Node):
                 return template.render(Context(context))
             else:
                 template = get_template(TEMPLATE_PREFIX % "field.html")
-                context = _bound_field_context(self.args[0].resolve(ctx),widget_attrs=attrs)
+                context = _bound_field_context(self.args[0].resolve(ctx),widget_attrs=attrs.copy())
                 return template.render(Context(context))
 
 @register.tag

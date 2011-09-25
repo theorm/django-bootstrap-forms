@@ -8,8 +8,10 @@
 		<div class="inline-inputs">
 			{% for field in fields %}
 				{% if field.field %}
+					{# it's a field #}
 					{{field.field}}
 				{% else %}
+					{# it's a text #}
 					{{field}}
 				{% endif %}
 			{% endfor %}
