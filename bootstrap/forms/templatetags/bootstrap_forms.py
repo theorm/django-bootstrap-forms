@@ -5,6 +5,7 @@ from django.forms.forms import BoundField
 from django.template.context import Context
 from django.template import Library, Node, TemplateSyntaxError 
 from django.template.defaulttags import kwarg_re
+from django.conf import settings
 
 register = Library()
 
@@ -15,6 +16,12 @@ class BootstrapFieldNode(Node):
         
     def render(self,ctx):
         attrs = {}
+        
+        if hasattr(settings,'BOOTSTRAP_HELP_BLOCK') and settings.BOOTSTRAP_HELP_BLOCK:
+            help_inline = False
+        else:
+            help_inline = True
+
         if 'span' in self.kwargs:
             attrs['class'] = Field.SPAN % self.kwargs['span'].resolve(ctx)
             
@@ -35,7 +42,7 @@ class BootstrapFieldNode(Node):
             help = _merge_field(contexts,'help_text')
             errors = _merge_field(contexts,'errors')
             
-            return template.render(Context({'fields' : contexts, 'label' : label, 'help' : help, 'errors' : errors}))
+            return template.render(Context({'fields' : contexts, 'label' : label, 'help' : help, 'errors' : errors, 'help_inline': help_inline}))
     
         else:
             if 'prepend' in self.kwargs or 'append' in self.kwargs:
@@ -47,7 +54,7 @@ class BootstrapFieldNode(Node):
                 addon = self.kwargs.get('prepend',self.kwargs.get('append')) 
                 addon = addon.resolve(ctx)
 
-                context = {}
+                context = {'help_inline': help_inline}
                 
                 context['field'] = _bound_field_context(self.args[0].resolve(ctx),widget_attrs=attrs.copy())
                 if isinstance(addon,BoundField):
@@ -62,6 +69,7 @@ class BootstrapFieldNode(Node):
             else:
                 template = get_template(TEMPLATE_PREFIX % "field.html")
                 context = _bound_field_context(self.args[0].resolve(ctx),widget_attrs=attrs.copy())
+                context['help_inline'] = help_inline
                 return template.render(Context(context))
 
 @register.tag

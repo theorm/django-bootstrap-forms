@@ -4,10 +4,10 @@
 		{{field}}
 		{% if errors %}
 		{% for error in errors %}
-		<span class="help-inline">{{error}}</span>
+		<span class="help-{% if help_inline %}inline{% else %}block{% endif %}">{{error}}</span>
 		{% endfor %}
 		{% else %}
-		<span class="help-inline">{{help_text}}</span>
+		<span class="help-{% if help_inline %}inline{% else %}block{% endif %}">{{help_text}}</span>
 		{% endif %}
 	</div>
 </div>

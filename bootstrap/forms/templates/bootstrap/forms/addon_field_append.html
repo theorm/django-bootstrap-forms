@@ -6,11 +6,11 @@
 			<label class="add-on">{% if addon.field %}{{addon.field}}{% else %}{{addon}}{% endif %}</label>
 			{% if errors %}
 			{% for error in errors %}
-			<span class="help-inline">{{error}}</span>
+			<span class="help-{% if help_inline %}inline{% else %}block{% endif %}">{{error}}</span>
 			{% endfor %}
 			{% else %}
 			{% for help_text in help %}
-			<span class="help-inline">{{help_text}}</span>
+			<span class="help-{% if help_inline %}inline{% else %}block{% endif %}">{{help_text}}</span>
 			{% endfor %}
 			{% endif %}
 		</div>

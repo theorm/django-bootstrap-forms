@@ -4,8 +4,15 @@ from django.utils.safestring import mark_safe
 from django.template.loader import get_template
 from django.template.context import Context
 from django import forms
+from django.conf import settings
 
 TEMPLATE_PREFIX='bootstrap/forms/%s'
+
+if hasattr(settings,'BOOTSTRAP_HELP_BLOCK') and settings.BOOTSTRAP_HELP_BLOCK:
+    help_inline = False
+else:
+    help_inline = True
+
 
 def _merge_field(collections,key):
     'Merge lists from collection[key] in every collection, remove duplicates and empty strings'
@@ -38,12 +45,13 @@ def _bound_field_context(bf,form=None,widget_attrs={}):
             help_text = force_unicode(bf.field.help_text)
         else:
             help_text = u''
-                    
+            
         return {
             'errors' : bf.errors,
             'label' : mark_safe(label),
             'field' : bf.as_widget(attrs=widget_attrs),
             'help_text' : help_text,
+            'help_inline' : help_inline
         }
 
 class BaseField(object):
@@ -99,7 +107,7 @@ class Inline(BaseField):
         errors = _merge_field(contexts,'errors')
 
         template = self.get_template()
-        return template.render(Context({'fields' : contexts, 'label' : self.label, 'help' : help, 'errors' : errors}))
+        return template.render(Context({'fields' : contexts, 'label' : self.label, 'help' : help, 'errors' : errors, 'help_inline' : help_inline}))
 
 class Addon(BaseField):
     def __init__(self,field,addon,prepend=True):
@@ -114,7 +122,7 @@ class Addon(BaseField):
             return get_template(TEMPLATE_PREFIX % "addon_field_append.html")
         
     def render(self,form,fields):
-        context = {}
+        context = {'help_inline' : help_inline}
 
         context['field'] = self.field.get_context(form,fields)
                 
