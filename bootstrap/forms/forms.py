@@ -51,7 +51,8 @@ def _bound_field_context(bf,form=None,widget_attrs={}):
             'label' : mark_safe(label),
             'field' : bf.as_widget(attrs=widget_attrs),
             'help_text' : help_text,
-            'help_inline' : help_inline
+            'help_inline' : help_inline,
+            'required' : bf.field.required
         }
 
 class BaseField(object):
