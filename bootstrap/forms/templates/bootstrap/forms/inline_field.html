@@ -1,4 +1,4 @@
-<div class="clearfix {% if errors %} error {% endif %}">
+<div class="clearfix {% if errors %} error {% endif %}{% if required %} required{% endif %}">
 	{% if label %}
 	<label>{{label}}:</label>
 	{% else %}

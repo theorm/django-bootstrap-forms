@@ -1,4 +1,4 @@
-<div class="clearfix {% if errors %} error {% endif %}">
+<div class="clearfix{% if errors %} error{% endif %}{% if hide %} hide{% endif %}{% if required %} required{% endif %}">
 	{{label}}
 	<div class="input">
 		{{field}}

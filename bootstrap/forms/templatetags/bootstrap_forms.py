@@ -21,7 +21,12 @@ class BootstrapFieldNode(Node):
             help_inline = False
         else:
             help_inline = True
-
+            
+        if 'hide' in self.kwargs:
+            hide_field = bool(self.kwargs['hide'])
+        else:
+            hide_field = False
+        
         if 'span' in self.kwargs:
             attrs['class'] = Field.SPAN % self.kwargs['span'].resolve(ctx)
             
@@ -29,6 +34,11 @@ class BootstrapFieldNode(Node):
             label = self.kwargs['label'].resolve(ctx)
         else:
             label = None
+            
+        if 'required' in self.kwargs:
+            required=True
+        else:
+            required=False
         
         if len(self.args) > 1:
             template = get_template(TEMPLATE_PREFIX % "inline_field.html")
@@ -42,7 +52,7 @@ class BootstrapFieldNode(Node):
             help = _merge_field(contexts,'help_text')
             errors = _merge_field(contexts,'errors')
             
-            return template.render(Context({'fields' : contexts, 'label' : label, 'help' : help, 'errors' : errors, 'help_inline': help_inline}))
+            return template.render(Context({'fields' : contexts, 'label' : label, 'help' : help, 'errors' : errors, 'help_inline': help_inline, 'hide': hide_field, 'required' : required}))
     
         else:
             if 'prepend' in self.kwargs or 'append' in self.kwargs:
@@ -54,9 +64,10 @@ class BootstrapFieldNode(Node):
                 addon = self.kwargs.get('prepend',self.kwargs.get('append')) 
                 addon = addon.resolve(ctx)
 
-                context = {'help_inline': help_inline}
+                context = {'help_inline': help_inline, 'hide': hide_field}
                 
                 context['field'] = _bound_field_context(self.args[0].resolve(ctx),widget_attrs=attrs.copy())
+                context['required'] = self.args[0].resolve(ctx).field.required
                 if isinstance(addon,BoundField):
                     context['addon'] =  _bound_field_context(addon)
                 else:
@@ -69,7 +80,9 @@ class BootstrapFieldNode(Node):
             else:
                 template = get_template(TEMPLATE_PREFIX % "field.html")
                 context = _bound_field_context(self.args[0].resolve(ctx),widget_attrs=attrs.copy())
+                context['required'] = self.args[0].resolve(ctx).field.required
                 context['help_inline'] = help_inline
+                context['hide'] = hide_field
                 return template.render(Context(context))
 
 @register.tag
