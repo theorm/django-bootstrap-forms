@@ -15,6 +15,9 @@
 					{{field}}
 				{% endif %}
 			{% endfor %}
+			{% if after %}
+			<span class="help-inline">{{after}}</span>
+			{% endif %}
 			{% if errors %}
 			{% for error in errors %}
 			<span class="help-{% if help_inline %}inline{% else %}block{% endif %}">{{error}}</span>

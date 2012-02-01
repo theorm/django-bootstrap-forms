@@ -4,6 +4,9 @@
 		<div class="input-append">
 			{{field.field}}
 			<label class="add-on">{% if addon.field %}{{addon.field}}{% else %}{{addon}}{% endif %}</label>
+			{% if after %}
+			<span class="help-inline">{{after}}</span>
+			{% endif %}
 		</div>
 		{% if errors %}
 		{% for error in errors %}

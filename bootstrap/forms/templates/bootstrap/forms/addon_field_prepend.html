@@ -4,6 +4,9 @@
 		<div class="input-prepend">
 			<label class="add-on">{% if addon.field %}{{addon.field}}{% else %}{{addon}}{% endif %}</label>
 			{{field.field}}
+			{% if after %}
+			<span class="help-inline">{{after}}</span>
+			{% endif %}
 		</div>
 		{% if errors %}
 		{% for error in errors %}
